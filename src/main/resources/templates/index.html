@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RegistrationForm</title>
+    <style>
+        /* --- Reset & Base Styles --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #2e1065);
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        /* --- Decorative Background Blobs --- */
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 0;
+            opacity: 0.4;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        .blob-1 {
+            top: 10%;
+            left: 15%;
+            width: 300px;
+            height: 300px;
+            background: #ec4899;
+        }
+        .blob-2 {
+            bottom: 10%;
+            right: 15%;
+            width: 350px;
+            height: 350px;
+            background: #3b82f6;
+            animation-delay: -5s;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(30px) scale(1.1); }
+        }
+
+        /* --- Main 3D Container --- */
+        .container {
+            position: relative;
+            width: 100%;
+            max-width: 750px;
+            padding: 20px;
+            z-index: 1;
+            transform-style: preserve-3d;
+        }
+
+        /* --- Glassmorphic Card --- */
+        .form-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            transition: transform 0.1s ease, opacity 0.5s ease, cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- Typography --- */
+        h2 {
+            color: #ffffff;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 1px;
+            transform: translateZ(30px);
+        }
+
+        /* --- Grid Layout for Form --- */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            transform: translateZ(20px);
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        /* --- Input Groups --- */
+        .input-group {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            color: #cbd5e1;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-group input,
+        .input-group select,
+        .input-group textarea {
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #ffffff;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus,
+        .input-group textarea:focus {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #6366f1;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Style drop-down options for readability */
+        .input-group select option {
+            background: #1e1b4b;
+            color: #fff;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        /* --- File Upload Customization --- */
+        .file-wrapper {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .file-wrapper input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-custom {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px dashed rgba(99, 102, 241, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            color: #a5b4fc;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .file-wrapper:hover .file-custom {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: #6366f1;
+        }
+
+        /* --- Submit Button --- */
+        .submit-btn {
+            grid-column: span 2;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #6366f1, #a855f7);
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transform: translateZ(25px);
+        }
+
+        .submit-btn:hover {
+            transform: translateZ(35px) scale(1.02);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .submit-btn:active {
+            transform: translateZ(20px) scale(0.98);
+        }
+
+        /* --- Success Card State --- */
+        .success-card {
+            text-align: center;
+            padding: 50px 40px;
+            transform: translateZ(40px);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            color: #22c55e;
+            font-size: 3rem;
+            animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .success-card h3 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .success-card p {
+            color: #94a3b8;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .full-width, .submit-btn {
+                grid-column: span 1;
+            }
+            .form-card {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+
+    <div class="container" id="container">
+        <div class="form-card" id="formCard">
+            
+            <form id="userForm" th:action="@{/userform/registerdata}" th:object="${userDto}" method="post" enctype="multipart/form-data" th:if="${successMessage == null}">
+                <h2>User Registration</h2>
+                <div class="form-grid">
+                    
+                    <div class="input-group">
+                        <label for="firstName">FirstName</label>
+                        <input type="text" th:field="*{firstName}" id="firstName" required placeholder="John">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="lastName">LastName</label>
+                        <input type="text" th:field="*{lastName}" id="lastName" required placeholder="Doe">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="dob">Dob</label>
+                        <input type="date" th:field="*{dob}" id="dob" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="gender">Gender</label>
+                        <select th:field="*{gender}" id="gender" required>
+                            <option value="" disabled selected>Select Gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label for="email">Email ID</label>
+                        <input type="email" th:field="*{emailId}" id="email" required placeholder="john.doe@example.com">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label for="qualification">Qualification</label>
+                        <input type="text" th:field="*{qualification}" id="qualification" required placeholder="e.g., Bachelor of Science, MCA">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label for="address">Address</label>
+                        <textarea th:field="*{address}" id="address" required placeholder="Street address, Apartment, Suite..."></textarea>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="state">State</label>
+                        <input type="text" th:field="*{state}" id="state" required placeholder="California">
+                    </div>
+
+                    <div class="input-group">
+                        <label for="nationality">Nationality</label>
+                        <input type="text" th:field="*{nationality}" id="nationality" required placeholder="American">
+                    </div>
+
+                    <div class="input-group full-width">
+                        <label>Upload Resume</label>
+                        <div class="file-wrapper">
+                            <input type="file" name="resumeFile" id="resume" required onchange="updateFileName(this)">
+                            <div class="file-custom" id="fileCustom">
+                                <svg width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"></path></svg>
+                                <span id="fileLabel">Choose PDF or Doc...</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </div>
+            </form>
+
+            <div class="success-card" id="successCard" th:if="${successMessage != null}">
+                <div class="success-icon">✓</div>
+                <h3>Submission Successful!</h3>
+                <p th:text="${successMessage}">Your details and resume have been securely uploaded.</p>
+                <div style="margin-top: 25px;">
+                     <a th:href="@{/registration}" style="color: #a5b4fc; text-decoration: none; font-weight: 500;">← Register another user</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        const card = document.getElementById('formCard');
+
+        /* --- 3D Mouse Parallax Effect --- */
+        container.addEventListener('mousemove', (e) => {
+            const xAxis = (window.innerWidth / 2 - e.pageX) / 25;
+            const yAxis = (window.innerHeight / 2 - e.pageY) / 25;
+            card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+        });
+
+        container.addEventListener('mouseleave', () => {
+            card.style.transform = 'rotateY(0deg) rotateX(0deg)';
+            card.style.transition = 'transform 0.5s ease';
+        });
+
+        container.addEventListener('mouseenter', () => {
+            card.style.transition = 'none';
+        });
+
+        /* --- Update File Name UI --- */
+        function updateFileName(input) {
+            const fileLabel = document.getElementById('fileLabel');
+            if (input.files && input.files.length > 0) {
+                fileLabel.textContent = input.files[0].name;
+                document.getElementById('fileCustom').style.borderColor = '#22c55e';
+            } else {
+                fileLabel.textContent = "Choose PDF or Doc...";
+            }
+        }
+    </script>
+</body>
+</html>
