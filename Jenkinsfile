@@ -15,5 +15,17 @@ tools{
 	     sh 'mvn clean package'
 			}
 		}	
+	stage("maven build"){
+	   steps{
+	     sh 'mvn clean package'
+			}
+		}	
+	stage("Docker Check"){
+	   steps{
+			sh 'whoami'
+			sh 'groups'
+			sh 'docker ps'
+			}
+		}
 	}
 }
