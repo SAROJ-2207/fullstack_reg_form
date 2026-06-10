@@ -22,5 +22,13 @@ tools{
 			sh 'docker ps'
 			}
 		}
+	  stage("Build docker image"){
+	   steps{
+			script{
+				sh 'docker ps'
+				sh 'docker build -t saroj2207/user_reg_image .'
+			  }
+			}
+		}	
 	}
 }
