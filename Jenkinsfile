@@ -29,6 +29,16 @@ tools{
 				sh 'docker build -t saroj2207/user_reg_image .'
 			  }
 			}
-		}	
+		}
+	  stage("Push image to docker hub"){
+	   steps{
+			script{
+				withCredentials([string(credentialsId: 'saroj2207', variable: 'dockervariable')]) {
+				sh 'docker login -u saroj2207 -p ${dockervariable}'
+				}
+				sh 'docker push saroj2207/user_reg_image'
+			  }
+			}
+		}
 	}
 }
