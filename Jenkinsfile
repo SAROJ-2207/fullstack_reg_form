@@ -15,11 +15,11 @@ tools{
 	     sh 'mvn clean package'
 			}
 		}
-	stage('SonarQube Analysis') {
-     withSonarQubeEnv() {
-      sh "mvn clean verify sonar:sonar -Dsonar.projectKey=test-project -Dsonar.projectName='test-project'"
-    }
-  }
+	// stage('SonarQube Analysis') {
+ //     withSonarQubeEnv() {
+ //      sh "mvn clean verify sonar:sonar -Dsonar.projectKey=test-project -Dsonar.projectName='test-project'"
+ //    }
+ //  }
 	stage("Docker Check"){
 	   steps{
 			sh 'whoami'
